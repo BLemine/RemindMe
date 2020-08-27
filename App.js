@@ -93,15 +93,15 @@ const styles = StyleSheet.create({
         padding: 20
     },
     input: {
-        borderColor: 'none',
-        padding: 15,
+        //borderColor: 'none',
+        padding: 4,
         width: '80%',
         color: 'white',
         height: 40,
         borderWidth: 0,
         borderRadius: 20,
         backgroundColor: ' rgb(51, 102, 204)',
-        placeholderTextColor: 'white'
+        //placeholderTextColor: 'white'
 
     },
     icon: {
