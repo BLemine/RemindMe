@@ -8,7 +8,8 @@ import {
 import { Avatar, Badge, Icon, withBadge, Button, CheckBox } from 'react-native-elements'
 //import { TabNavigator } from 'react-navigation';
 import Note from "./Note";
-import SplashScreen from './Splash';
+//import SplashScreen from './Splash';
+import SplashScreen from "react-native-splash-screen";
 export default class App extends Component {
   constructor() {
     super();
@@ -32,12 +33,10 @@ export default class App extends Component {
     }
   }
   componentDidMount() {
-    this.setState({ isLoading: false });
+    SplashScreen.hide();
   }
   render() {
-    if (this.state.isLoading) {
-      return <SplashScreen />
-    } else {
+    
       return (
         <ScrollView>
           <SafeAreaView style={styles.container}>
@@ -130,7 +129,6 @@ export default class App extends Component {
         </ScrollView>
       )
     }
-  }
 }
 
 const styles = StyleSheet.create({
