@@ -9,7 +9,8 @@ import { Avatar, Badge, Icon, withBadge, Button, CheckBox } from 'react-native-e
 import NoteModal from "./NoteModal";
 import SplashScreen from "react-native-splash-screen";
 import AsyncStorage from '@react-native-community/async-storage';
-
+//import PushNotificationIOS from "@react-native-community/push-notification-ios";
+var PushNotification = require("react-native-push-notification");
 export default class App extends Component {
   constructor() {
     super();
@@ -33,6 +34,52 @@ export default class App extends Component {
       },
       priority: "yellow"
     }
+    //
+    PushNotification.configure({
+      onRegister: function (token) {
+        console.log("TOKEN:", token);
+      },
+      onNotification: function (notification) {
+        console.log("NOTIFICATION:", notification);
+        //notification.finish(PushNotificationIOS.FetchResult.NoData);
+      },
+      onAction: function (notification) {
+        console.log("ACTION:", notification.action);
+        console.log("NOTIFICATION:", notification);
+
+        // process the action
+      },
+      // (optional) Called when the user fails to register for remote notifications. Typically occurs when APNS is having issues, or the device is a simulator. (iOS)
+      onRegistrationError: function (err) {
+        console.error(err.message, err);
+      },
+      // IOS ONLY (optional): default: all - Permissions to register.
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true,
+      },
+      popInitialNotification: true,
+      requestPermissions: Platform.OS === 'ios'
+      ,
+    });
+    //
+  }
+  testNotif = () => {
+    console.log("it has to start now !")
+    PushNotification.localNotification({
+      autoCancel: true,
+      bigText:
+        'This is local notification demo in React Native app. Only shown, when expanded.',
+      subText: 'Local Notification Demo',
+      title: 'Local Notification Title',
+      message: 'Expand me to see more',
+      vibrate: true,
+      vibration: 300,
+      playSound: true,
+      soundName: 'default',
+      actions: '["Yes", "No"]'
+    });
   }
   addNote = async (note) => {
     try {
@@ -55,18 +102,20 @@ export default class App extends Component {
   cleanNotes = async () => {
     await AsyncStorage.removeItem('notes');
     //this.getNotes();
-    this.setState({notes:[
-      {
-        title: "Reminder 1",
-        text: "Don't forget to change your mask ;) ",
-        priority: "yellow"
-      },
-      {
-        title: "Reminder 2",
-        text: "Be sure to sleep early today ",
-        priority: "yellow"
-      }
-    ]})
+    this.setState({
+      notes: [
+        {
+          title: "Reminder 1",
+          text: "Don't forget to change your mask ;) ",
+          priority: "yellow"
+        },
+        {
+          title: "Reminder 2",
+          text: "Be sure to sleep early today ",
+          priority: "yellow"
+        }
+      ]
+    })
   }
   getNotes = async () => {
     if (await AsyncStorage.getItem('notes') !== null) {
@@ -79,6 +128,7 @@ export default class App extends Component {
   componentDidMount() {
     SplashScreen.hide();
     this.getNotes();
+    setTimeout(() => this.testNotif(), 4000)
   }
   render() {
     return (
